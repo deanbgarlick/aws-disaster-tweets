@@ -13,6 +13,8 @@ import torch
 
 from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification
 
+from model_wrapper import ModelWrapper
+
 
 # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 feature_columns_names = ['keyword', 'location', 'text']
@@ -65,19 +67,12 @@ def output_fn(predictions, accept):
         raise RuntimeException("{} accept type is not supported by this script.".format(accept))
 
 
-class ModelWrapper:
-
-    def __init__(self, tokenizer, classifier):
-        self._tokenizer = tokenizer
-        self._classifier = classifier
-        self._device = self._classifier.device
-
-    def __call__(self, text):
-        inputs = self._tokenizer.encode_plus(text, return_tensors = "pt")
-        with torch.no_grad():
-            outputs = self._classifier(**inputs)
-            output = torch.argmax(outputs.logits).item()
-        return output
+def model_fn(model_dir):
+    """Deserialize fitted model"""
+    tokenizer = DistilBertTokenizerFast.from_pretrained(os.path.join(model_dir, 'tokenizer'), local_files_only=True)
+    classifier = DistilBertForSequenceClassification.from_pretrained(os.path.join(model_dir, 'model'), local_files_only=True)
+    model = ModelWrapper(tokenizer, classifier)
+    return model
 
 
 def predict_fn(df, model):
@@ -92,11 +87,3 @@ def predict_fn(df, model):
         prediction = model(tweet)
         predictions.append(prediction)
     return predictions
-
-
-def model_fn(model_dir):
-    """Deserialize fitted model"""
-    tokenizer = DistilBertTokenizerFast.from_pretrained(os.path.join(model_dir, 'tokenizer'), local_files_only=True)
-    classifier = DistilBertForSequenceClassification.from_pretrained(os.path.join(model_dir, 'model'), local_files_only=True)
-    model = ModelWrapper(tokenizer, classifier)
-    return model

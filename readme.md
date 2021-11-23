@@ -1,7 +1,19 @@
-Created a ec2 instance in the default vpc with a public ip
-Assigned it the role ec2-disaster-tweets
+### To train the model
 
-AWS_EC2_PUBLIC_IP=54.214.109.185
+`python -m sgmkr.estimator`
 
-scp -i secrets/aws-disaster-tweets.pem -r ec2_setup ec2-user@${AWS_EC2_PUBLIC_IP}:/home/ec2-user
-ssh -i secrets/aws-disaster-tweets.pem ec2-user@${AWS_EC2_PUBLIC_IP}
+
+### To create, run and test, the docker inference container locally
+
+```
+python3 -m virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+aws s3 cp s3://sagemaker-us-west-2-257018485161/pytorch-inference-2021-11-20-04-02-02-410/model.tar.gz ./model
+docker build -t inference-server inference
+docker run -v $(pwd)/model:/opt/ml/model -p 5000:5000 inference-server --host 0.0.0.0
+sleep 20
+python test/test_local.py
+```
+
+###

@@ -18,7 +18,7 @@ estimator = PyTorch(
     framework_version='1.9',
     volume_size=5,
     output_path='s3://disaster-tweets-example-remote-storage/sagemaker-output',
-    sagemaker_session=sagemaker.Session(boto3.session.Session(region_name='us-west-2')), # sagemaker_session=sagemaker.LocalSession(),
+    # sagemaker_session=sagemaker.Session(boto3.session.Session(region_name='us-west-2')), # sagemaker_session=sagemaker.LocalSession(),
     dependencies=['sgmkr/train/requirements.txt', 'sgmkr/train/dataset.py']
     )
 

@@ -1,5 +1,4 @@
+boto3
 pandas
 sagemaker
-sklearn
-torch
-transformers
+requests
