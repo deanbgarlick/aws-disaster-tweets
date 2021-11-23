@@ -10,4 +10,4 @@ COPY src .
 
 ENV FLASK_APP=server.py
 
-ENTRYPOINT [ "flask", "run" ]
+ENTRYPOINT [ "gunicorn", "--bind", "0.0.0.0:5000", "--workers", "3", "wsgi:app" ]

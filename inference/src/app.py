@@ -6,7 +6,26 @@ from model_handler import model_fn, input_fn, predict_fn, output_fn
 
 app = Flask(__name__)
 MODEL_DIR = os.getenv('MODEL_DIR', '/opt/ml/model')
-model = model_fn(MODEL_DIR)
+
+
+class ModelService:
+
+    _instance = None
+    _model = model_fn(MODEL_DIR)
+
+    def __init__(self):
+        raise Exception('Call instance()')
+
+    @classmethod
+    def instance(cls):
+        if cls._instance is None:
+            cls._instance = cls.__new__(cls)
+        return cls._instance
+
+    def transform(self, df):
+        return predict_fn(df, self._model)
+
+ModelService.instance()
 
 
 @app.route("/")
@@ -31,7 +50,7 @@ def predict():
     else:
         raise ValueError(f'Unknown content-type {request.content_type}')
     df = input_fn(input_data, request.content_type)
-    predictions = predict_fn(df, model)
+    predictions = ModelService.instance().transform(df)
     flask_accept = request.headers.getlist('accept')
     if 'application/json' in flask_accept:
         accept = 'application/json'
@@ -41,7 +60,3 @@ def predict():
         accept = 'application/json'
     response = output_fn(predictions, accept)
     return response
-
-
-if __name__ == '__main__':
-    app.run()
