@@ -9,5 +9,6 @@ RUN pip install -r requirements.txt
 COPY src .
 
 ENV FLASK_APP=server.py
+ENV APP_NAME=pytorch-model-server
 
 ENTRYPOINT [ "gunicorn", "--bind", "0.0.0.0:5000", "--workers", "3", "wsgi:app" ]
