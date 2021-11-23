@@ -1,6 +1,7 @@
 # https://sagemaker.readthedocs.io/en/stable/overview.html
 # https://sagemaker.readthedocs.io/en/stable/frameworks/pytorch/using_pytorch.html#serve-a-pytorch-model
 
+import boto3
 import sagemaker
 from sagemaker.pytorch import PyTorch
 from sagemaker.estimator import Estimator
@@ -17,7 +18,7 @@ estimator = PyTorch(
     framework_version='1.9',
     volume_size=5,
     output_path='s3://disaster-tweets-example-remote-storage/sagemaker-output',
-    sagemaker_session=sagemaker.Session(), # sagemaker_session=sagemaker.LocalSession(),
+    sagemaker_session=sagemaker.Session(boto3.session.Session(region_name='us-west-2')), # sagemaker_session=sagemaker.LocalSession(),
     dependencies=['src/train/requirements.txt', 'src/train/dataset.py']
     )
 

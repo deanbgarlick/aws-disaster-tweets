@@ -10,13 +10,14 @@ from sagemaker.serializers import SimpleBaseSerializer
 from sagemaker.deserializers import SimpleBaseDeserializer
 from sagemaker.pytorch.model import PyTorchModel
 
-from sagemaker import get_execution_role
-from sagemaker.local import LocalSession
+# from sagemaker import get_execution_role
+# from sagemaker.local import LocalSession
 
-role = get_execution_role()
-sagemaker_session = LocalSession()
-sagemaker_session.config = {'local': {'local_code': True}}
+# role = get_execution_role()
+# sagemaker_session = LocalSession()
+# sagemaker_session.config = {'local': {'local_code': True}}
 
+sagemaker_session = sagemaker.Session(boto3.session.Session(region_name='us-west-2'))
 
 class Serializer(SimpleBaseSerializer):
 
@@ -51,6 +52,7 @@ sagemaker_model = PyTorchModel(
     entry_point='sagemaker/inference/entry_point.py',
     dependencies=['sagemaker/inference/requirements.txt'],
     py_version='py38',
+    sagemaker_session=sagemaker_session,
     framework_version='1.9',
     predictor_cls=predictor_cls,
     name='distilbert-disaster-tweets'
