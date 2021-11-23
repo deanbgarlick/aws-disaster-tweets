@@ -3,7 +3,7 @@
 `python -m sgmkr.estimator`
 
 
-### To create, run and test, the docker inference container locally
+### To create, run, and test, the docker inference image locally
 
 ```
 python3 -m virtualenv venv
