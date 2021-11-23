@@ -3,6 +3,7 @@
 
 from io import StringIO
 
+import boto3
 import pandas as pd
 import sagemaker
 
@@ -49,8 +50,8 @@ print('made callback')
 sagemaker_model = PyTorchModel(
     model_data='s3://disaster-tweets-example-remote-storage/sagemaker-output/pytorch-training-2021-11-14-07-33-43-391/output/model.tar.gz',
     role='arn:aws:iam::257018485161:role/sagemaker-disaster-tweets',
-    entry_point='sagemaker/inference/entry_point.py',
-    dependencies=['sagemaker/inference/requirements.txt'],
+    entry_point='sgmkr/inference/entry_point.py',
+    dependencies=['sgmkr/inference/requirements.txt'],
     py_version='py38',
     sagemaker_session=sagemaker_session,
     framework_version='1.9',
